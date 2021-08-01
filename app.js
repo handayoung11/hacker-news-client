@@ -7,6 +7,11 @@ const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
 
 ajax.open('GET', NEWS_URL, false);
 ajax.send();
+function getData(url) {
+    ajax.open('GET', url, false);
+    ajax.send();
+    return JSON.parse(ajax.response);
+}
 
 const newsFeed = JSON.parse(ajax.response);
 const ul = document.createElement('ul');let li = '';
