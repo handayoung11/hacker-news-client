@@ -3,20 +3,20 @@ const ajax = new XMLHttpRequest();
 const NEWS_URL = 'https://api.hnpwa.com/v0/news/1.json';
 const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
 const store = {
-    currentPage: 1,
-    feeds: [],
+  currentPage: 1,
+  feeds: [],
 };
 
 function getData(url) {
-    ajax.open('GET', url, false);
-    ajax.send();
-    return JSON.parse(ajax.response);
+  ajax.open('GET', url, false);
+  ajax.send();
+  return JSON.parse(ajax.response);
 }
 
 function newsFeed() {
-    let newsFeed = store.feeds;
-    const newsList = [];
-    let template = `
+  let newsFeed = store.feeds;
+  const newsList = [];
+  let template = `
     <div class="bg-gray-600 min-h-screen">
       <div class="bg-white text-xl">
         <div class="mx-auto px-4">
@@ -41,12 +41,12 @@ function newsFeed() {
     </div>
     `;
 
-    if (newsFeed.length == 0) {
-      newsFeed = store.feeds = getData(NEWS_URL);
-    }
-    
-    for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
-        newsList.push(`
+  if (newsFeed.length == 0) {
+    newsFeed = store.feeds = getData(NEWS_URL);
+  }
+
+  for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
+    newsList.push(`
         <div class="p-6 ${newsFeed[i].read ? 'bg-red-500' : 'bg-white'} mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
             <div class="flex">
             <div class="flex-auto">
@@ -65,20 +65,20 @@ function newsFeed() {
             </div>
         </div>
         `);
-    }
+  }
 
-    template = template.replace('{{__news_feed__}}', newsList.join(''));
-    template = template.replace('{{__prev_page__}}', store.currentPage > 1 ? store.currentPage - 1 : 1);
-    template = template.replace('{{__next_page__}}', store.currentPage == newsFeed.length / 10 ? store.currentPage : store.currentPage + 1);
+  template = template.replace('{{__news_feed__}}', newsList.join(''));
+  template = template.replace('{{__prev_page__}}', store.currentPage > 1 ? store.currentPage - 1 : 1);
+  template = template.replace('{{__next_page__}}', store.currentPage == newsFeed.length / 10 ? store.currentPage : store.currentPage + 1);
 
-    container.innerHTML = template;
+  container.innerHTML = template;
 }
 
 function newsDetail() {
-    const id = location.hash.substr(7);
+  const id = location.hash.substr(7);
 
-    const newsContent = getData(CONTENT_URL.replace('@id', id));
-    let template = `
+  const newsContent = getData(CONTENT_URL.replace('@id', id));
+  let template = `
     <div class="bg-gray-600 min-h-screen pb-8">
       <div class="bg-white text-xl">
         <div class="mx-auto px-4">
@@ -107,18 +107,18 @@ function newsDetail() {
     </div>
     `;
 
-    for (let i = 0; i < store.feeds.length; i++) {
-        if (store.feeds[i].id == Number(id)) {
-            store.feeds[i].read = true;
-            break;
-        }
+  for (let i = 0; i < store.feeds.length; i++) {
+    if (store.feeds[i].id == Number(id)) {
+      store.feeds[i].read = true;
+      break;
     }
+  }
 
-    function makeComment(comments, called = 0) { 
-        const commentString = [];
+  function makeComment(comments, called = 0) {
+    const commentString = [];
 
-        for (let i = 0; i < comments.length; i++) {
-            commentString.push(`
+    for (let i = 0; i < comments.length; i++) {
+      commentString.push(`
             <div style="padding-left: ${called * 40}px;" class="mt-4">
               <div class="text-gray-400">
                 <i class="fa fa-sort-up mr-2"></i>
@@ -127,26 +127,26 @@ function newsDetail() {
               <p class="text-gray-700">${comments[i].content}</p>
             </div>      
           `);
-            if (comments[i].comments.length > 0)
-                commentString.push(makeComment(comments[i].comments, called + 1));
-        }
-        return commentString.join('');
+      if (comments[i].comments.length > 0)
+        commentString.push(makeComment(comments[i].comments, called + 1));
     }
+    return commentString.join('');
+  }
 
-    container.innerHTML = template.replace('{{__comments__}}', makeComment(newsContent.comments));
+  container.innerHTML = template.replace('{{__comments__}}', makeComment(newsContent.comments));
 }
 
 function router() {
-    const routePath = location.hash;
+  const routePath = location.hash;
 
-    if (routePath == '') {
-        newsFeed();
-    } else if (routePath.includes('#/page/')) {
-        store.currentPage = Number(routePath.substr(7));
-        newsFeed();
-    } else {
-        newsDetail();
-    }
+  if (routePath == '') {
+    newsFeed();
+  } else if (routePath.includes('#/page/')) {
+    store.currentPage = Number(routePath.substr(7));
+    newsFeed();
+  } else {
+    newsDetail();
+  }
 }
 
 window.addEventListener('hashchange', router);
