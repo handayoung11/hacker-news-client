@@ -28,7 +28,7 @@ function newsFeed() {
         </div>
     `;
 
-    for(let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
+    for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
 
         newsList.push(`
             <li>
@@ -40,8 +40,8 @@ function newsFeed() {
     }
 
     template = template.replace('{{__news_feed__}}', newsList.join(''));
-    template = template.replace('{{__prev_page__}}', store.currentPage>1? store.currentPage - 1:1);
-    template = template.replace('{{__next_page__}}', store.currentPage == newsFeed.length/10?store.currentPage:store.currentPage + 1);
+    template = template.replace('{{__prev_page__}}', store.currentPage > 1 ? store.currentPage - 1 : 1);
+    template = template.replace('{{__next_page__}}', store.currentPage == newsFeed.length / 10 ? store.currentPage : store.currentPage + 1);
 
     container.innerHTML = template;
 }
@@ -63,8 +63,8 @@ function newsDetail() {
 
 function router() {
     const routePath = location.hash;
-    
-    if(routePath == '') {
+
+    if (routePath == '') {
         newsFeed();
     } else if (routePath.includes('#/page/')) {
         store.currentPage = Number(routePath.substr(7));
