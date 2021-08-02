@@ -104,8 +104,8 @@ function newsFeed(): void {
   }
 
   template = template.replace('{{__news_feed__}}', newsList.join(''));
-  template = template.replace('{{__prev_page__}}', store.currentPage > 1 ? store.currentPage - 1 : 1);
-  template = template.replace('{{__next_page__}}', store.currentPage == newsFeed.length / 10 ? store.currentPage : store.currentPage + 1);
+  template = template.replace('{{__prev_page__}}', String(store.currentPage > 1 ? store.currentPage - 1 : 1));
+  template = template.replace('{{__next_page__}}', String(store.currentPage == newsFeed.length / 10 ? store.currentPage : store.currentPage + 1));
 
   updateView(template);
 }
