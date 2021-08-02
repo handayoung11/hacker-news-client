@@ -3,16 +3,31 @@ type Store = {
   feeds: NewsFeed[];
 }
 
-type NewsFeed = {
+type News = {
   id: number;
-  comments_count: number;
+  time_ago: string;
   url: string;
   user: string;
-  time_ago: string;
-  points: number;
+}
+
+type NewsFeed = News & {
   title: string;
+  comments_count: number;
+  points: number;
   read?: boolean;
 }
+
+type NewsDetail = News & {
+  title: string;
+  content: string;
+  comments: NewsComment[];
+};
+
+type NewsComment = News & {
+  content: string;
+  comments: NewsComment[];
+  level: number;
+};
 
 const container: HTMLElement | null = document.getElementById('root');
 const ajax: XMLHttpRequest = new XMLHttpRequest();
