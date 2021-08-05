@@ -1,32 +1,32 @@
-type Store = {
+interface Store {
   currentPage: number;
   feeds: NewsFeed[];
 }
 
-type News = {
-  id: number;
-  time_ago: string;
-  url: string;
-  user: string;
+interface News {
+  readonly id: number;
+  readonly time_ago: string;
+  readonly url: string;
+  readonly user: string;
 }
 
-type NewsFeed = News & {
-  title: string;
-  comments_count: number;
-  points: number;
+interface NewsFeed extends News {
+  readonly title: string;
+  readonly comments_count: number;
+  readonly points: number;
   read?: boolean;
 }
 
-type NewsDetail = News & {
-  title: string;
-  content: string;
-  comments: NewsComment[];
+interface NewsDetail extends News {
+  readonly title: string;
+  readonly content: string;
+  readonly comments: NewsComment[];
 };
 
-type NewsComment = News & {
-  content: string;
-  comments: NewsComment[];
-  level: number;
+interface NewsComment extends News {
+  readonly content: string;
+  readonly comments: NewsComment[];
+  readonly level: number;
 };
 
 const container: HTMLElement | null = document.getElementById('root');
