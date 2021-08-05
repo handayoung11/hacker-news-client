@@ -30,7 +30,6 @@ interface NewsComment extends News {
 };
 
 const container: HTMLElement | null = document.getElementById('root');
-const ajax: XMLHttpRequest = new XMLHttpRequest();
 const NEWS_URL = 'https://api.hnpwa.com/v0/news/1.json';
 const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
 const store: Store = {
@@ -38,10 +37,32 @@ const store: Store = {
   feeds: [],
 };
 
-function getData<AjaxResponse>(url: string): AjaxResponse {
-  ajax.open('GET', url, false);
-  ajax.send();
-  return JSON.parse(ajax.response);
+class Api {
+  url: string;
+  ajax: XMLHttpRequest;
+
+  constructor(url: string) {
+    this.url = url;
+    this.ajax = new XMLHttpRequest;
+  }
+
+  protected sendRequest<AjaxResponse>(): AjaxResponse {
+    this.ajax.open('GET', this.url, false);
+    this.ajax.send();
+    return JSON.parse(this.ajax.response);
+  }
+}
+
+class NewsFeedApi extends Api {
+  getData(): NewsFeed[] {
+    return this.sendRequest<NewsFeed[]>();
+  }
+}
+
+class NewsDetailApi extends Api {
+  getData(): NewsDetail {
+    return this.sendRequest<NewsDetail>();
+  }
 }
 
 function updateView(html: string): void {
@@ -50,6 +71,7 @@ function updateView(html: string): void {
 }
 
 function newsFeed(): void {
+  const api = new NewsFeedApi(NEWS_URL);
   let newsFeed: NewsFeed[] = store.feeds;
   const newsList = [];
   let template = `
@@ -78,7 +100,7 @@ function newsFeed(): void {
     `;
 
   if (newsFeed.length == 0) {
-    newsFeed = store.feeds = getData<NewsFeed[]>(NEWS_URL);
+    newsFeed = store.feeds = api.getData();
   }
 
   for (let i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
@@ -112,8 +134,9 @@ function newsFeed(): void {
 
 function newsDetail(): void {
   const id = location.hash.substr(7);
+  const api = new NewsDetailApi(CONTENT_URL.replace('@id', id));
 
-  const newsContent = getData<NewsDetail>(CONTENT_URL.replace('@id', id));
+  const newsContent = api.getData();
   let template = `
     <div class="bg-gray-600 min-h-screen pb-8">
       <div class="bg-white text-xl">
