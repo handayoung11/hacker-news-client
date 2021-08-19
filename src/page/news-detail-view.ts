@@ -32,33 +32,32 @@ const template = `
     </div>
     `;
 export default class NewsDetailView extends View {
-    store: NewsStore;
+  store: NewsStore;
 
-    constructor(containerId: string, store: NewsStore) {
-        super(containerId, template);
-        this.store = store;
-    }
+  constructor(containerId: string, store: NewsStore) {
+    super(containerId, template);
+    this.store = store;
+  }
 
-    render(): void {
-        const id = location.hash.substr(7);
-        const api = new NewsDetailApi(CONTENT_URL.replace('@id', id));
-        
-        api.getDataWithPromise((data: NewsDetail) => {
-          this.store.makeRead(Number(id));
-          this.setTemplateData('currentPage', String(this.store.currentPage));
-          this.setTemplateData('title', data.title);
-          this.setTemplateData('content', data.content);
-          this.setTemplateData('comments', this.makeComment(data.comments))
-          this.updateView();
-        });
-    }
+  async render(): Promise<void> {
+    const id = location.hash.substr(7);
+    const api = new NewsDetailApi(CONTENT_URL.replace('@id', id));
+
+    const newsContent = await api.getData();
+    this.store.makeRead(Number(id));
+    this.setTemplateData('currentPage', String(this.store.currentPage));
+    this.setTemplateData('title', newsContent.title);
+    this.setTemplateData('content', newsContent.content);
+    this.setTemplateData('comments', this.makeComment(newsContent.comments))
+    this.updateView();
+  }
 
 
-    private makeComment(comments: NewsComment[]): string {
-        for (let i = 0; i < comments.length; i++) {
-            const comment: NewsComment = comments[i];
+  private makeComment(comments: NewsComment[]): string {
+    for (let i = 0; i < comments.length; i++) {
+      const comment: NewsComment = comments[i];
 
-            this.addHtml(`
+      this.addHtml(`
             <div style="padding-left: ${comment.level * 40}px;" class="mt-4">
               <div class="text-gray-400">
                 <i class="fa fa-sort-up mr-2"></i>
@@ -67,9 +66,9 @@ export default class NewsDetailView extends View {
               <p class="text-gray-700">${comment.content}</p>
             </div>      
           `);
-            if (comment.comments.length > 0)
-                this.addHtml(this.makeComment(comment.comments));
-        }
-        return this.getHtml();
+      if (comment.comments.length > 0)
+        this.addHtml(this.makeComment(comment.comments));
     }
+    return this.getHtml();
+  }
 }
