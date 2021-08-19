@@ -1,6 +1,6 @@
 import View from '../core/view'
 import { NewsDetailApi } from '../core/api';
-import { NewsComment, NewsStore } from '../types';
+import { NewsComment, NewsDetail, NewsStore } from '../types';
 import { CONTENT_URL } from '../config';
 
 const template = `
@@ -42,14 +42,15 @@ export default class NewsDetailView extends View {
     render(): void {
         const id = location.hash.substr(7);
         const api = new NewsDetailApi(CONTENT_URL.replace('@id', id));
-        const newsContent = api.getData(id);
-        this.store.makeRead(Number(id));
-
-        this.setTemplateData('currentPage', String(this.store.currentPage));
-        this.setTemplateData('title', newsContent.title);
-        this.setTemplateData('content', newsContent.content);
-        this.setTemplateData('comments', this.makeComment(newsContent.comments))
-        this.updateView();
+        
+        api.getDataWithXHR((data: NewsDetail) => {
+          this.store.makeRead(Number(id));
+          this.setTemplateData('currentPage', String(this.store.currentPage));
+          this.setTemplateData('title', data.title);
+          this.setTemplateData('content', data.content);
+          this.setTemplateData('comments', this.makeComment(data.comments))
+          this.updateView();
+        });
     }
 
 
