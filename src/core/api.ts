@@ -16,6 +16,15 @@ export class Api {
 
         this.xhr.send();
     }
+
+    sendRequestWithPromise<AjaxResponse>(cb: (data: AjaxResponse) => void): void {
+        fetch(this.url)
+            .then(response => response.json())
+            .then(cb)
+            .catch(() => {
+                console.error('데이터를 불러오지 못했습니다.');
+            })
+    }
 }
 
 
@@ -28,6 +37,10 @@ export class NewsFeedApi extends Api {
     getDataWithXHR(cb: (data: NewsFeed[]) => void): void {
         this.sendRequestWithXHR<NewsFeed[]>(cb);
     }
+
+    getDataWithPromise(cb: (data: NewsFeed[]) => void): void {
+        return this.sendRequestWithPromise<NewsFeed[]>(cb);
+    }
 }
 
 export class NewsDetailApi extends Api {
@@ -38,5 +51,9 @@ export class NewsDetailApi extends Api {
 
     getDataWithXHR(cb: (data: NewsDetail) => void): void {
         this.sendRequestWithXHR<NewsDetail>(cb);
+    }
+
+    getDataWithPromise(cb: (data: NewsDetail) => void): void {
+        return this.sendRequestWithPromise<NewsDetail>(cb);
     }
 }
