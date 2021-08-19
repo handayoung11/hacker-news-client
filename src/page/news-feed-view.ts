@@ -1,6 +1,7 @@
 import { NewsFeedApi } from "../core/api";
-import { NewsFeed, NewsStore } from "../types";
+import { NewsStore } from "../types";
 import View from '../core/view'
+import { NEWS_URL } from "../config";
 
 let template = `
         <div class="bg-gray-600 min-h-screen">
@@ -35,7 +36,7 @@ export default class NewsFeedView extends View {
         super(containerId, template);
         
         this.store = store;
-        this.api = new NewsFeedApi();
+        this.api = new NewsFeedApi(NEWS_URL);
 
         if (!this.store.hasFeeds) {
             this.store.setFeeds(this.api.getData());

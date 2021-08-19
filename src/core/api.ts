@@ -1,44 +1,40 @@
 import { NewsFeed, NewsDetail } from '../types'
 import { NEWS_URL, CONTENT_URL } from '../config';
 export class Api {
+    ajax: XMLHttpRequest;
+    url: string;
+    
+    constructor(url: string) {
+        this.ajax = new XMLHttpRequest();
+        this.url = url;
+    }
 
-    sendRequest<AjaxResponse>(url: string): AjaxResponse {
-        const ajax = new XMLHttpRequest();
-        ajax.open('GET', url, false);
-        ajax.send();
-        return JSON.parse(ajax.response);
+    sendRequest<AjaxResponse>(): AjaxResponse {
+        this.ajax.open('GET', this.url, false);
+        this.ajax.send();
+        return JSON.parse(this.ajax.response);
     }
 }
 
 
-export class NewsFeedApi {
+export class NewsFeedApi extends Api {
+    
+    constructor(url: string) {
+        super(url);
+    }
+
     getData(): NewsFeed[] {
-        return this.sendRequest<NewsFeed[]>(NEWS_URL);
+        return this.sendRequest<NewsFeed[]>();
     }
 }
 
-export class NewsDetailApi {
+export class NewsDetailApi extends Api {
+    
+    constructor(url: string) {
+        super(url);
+    }
+
     getData(id: string): NewsDetail {
-        return this.sendRequest<NewsDetail>(CONTENT_URL.replace('@id', id));
+        return this.sendRequest<NewsDetail>();
     }
-}
-
-// 컴파일러에게 Api 클래스를 상속받는다고 알려주는 것
-export interface NewsFeedApi extends Api { };
-export interface NewsDetailApi extends Api { };
-
-applyApiMixins(NewsFeedApi, [Api]);
-applyApiMixins(NewsDetailApi, [Api]);
-
-
-function applyApiMixins(targetClass: any, baseClasses: any[]): void {
-    baseClasses.forEach(baseClass => {
-        Object.getOwnPropertyNames(baseClass.prototype).forEach(name => {
-            const descriptor = Object.getOwnPropertyDescriptor(baseClass.prototype, name);
-
-            if (descriptor) {
-                Object.defineProperty(targetClass.prototype, name, descriptor);
-            }
-        })
-    })
 }

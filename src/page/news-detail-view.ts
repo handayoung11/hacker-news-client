@@ -1,6 +1,7 @@
 import View from '../core/view'
 import { NewsDetailApi } from '../core/api';
 import { NewsComment, NewsStore } from '../types';
+import { CONTENT_URL } from '../config';
 
 const template = `
     <div class="bg-gray-600 min-h-screen pb-8">
@@ -31,18 +32,17 @@ const template = `
     </div>
     `;
 export default class NewsDetailView extends View {
-    api: NewsDetailApi;
     store: NewsStore;
 
     constructor(containerId: string, store: NewsStore) {
         super(containerId, template);
-        this.api = new NewsDetailApi();
         this.store = store;
     }
 
     render(): void {
         const id = location.hash.substr(7);
-        const newsContent = this.api.getData(id);
+        const api = new NewsDetailApi(CONTENT_URL.replace('@id', id));
+        const newsContent = api.getData(id);
         this.store.makeRead(Number(id));
 
         this.setTemplateData('currentPage', String(this.store.currentPage));
