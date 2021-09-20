@@ -1,2 +1,6 @@
 # hacker-news-client
-해커 뉴스 클라이언트 웹
+develop environment: VSCode, NodeJS, ParcelJS
+language: JS and TS
+
+I made hacker-news-client web with ts and js.
+I used https://github.com/HackerNews/API as my server.
