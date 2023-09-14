@@ -26,9 +26,10 @@ export interface News {
 
 export interface NewsFeed extends News {
     readonly title: string;
+    readonly like: number;
+    readonly contents: string;
     readonly comments_count: number;
-    readonly points: number;
-    read?: boolean;
+    read? : boolean
 }
 
 export interface NewsDetail extends News {

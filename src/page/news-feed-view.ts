@@ -47,9 +47,10 @@ export default class NewsFeedView extends View {
         }
 
         for (let i = (this.store.currentPage - 1) * 10; i < this.store.currentPage * 10; i++) {
-            const { id, title, comments_count, user, points, time_ago, read } = this.store.getFeed(i);
+            if (!this.store.getFeed(i)) break;
+            const { id, title, user, like, time_ago, read, comments_count } = this.store.getFeed(i);
             this.addHtml(`
-            <div class="p-6 ${read ? 'bg-red-500' : 'bg-white'} mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
+            <div class="p-6 ${read ? 'bg-amber-300' : 'bg-white'} mt-6 rounded-lg shadow-md transition-colors duration-500 hover:bg-green-100">
                 <div class="flex">
                 <div class="flex-auto">
                     <a href="#/show/${id}">${title}</a>  
@@ -61,7 +62,7 @@ export default class NewsFeedView extends View {
                 <div class="flex mt-3">
                 <div class="grid grid-cols-3 text-sm text-gray-500">
                     <div><i class="fas fa-user mr-1"></i>${user}</div>
-                    <div><i class="fas fa-heart mr-1"></i>${points}</div>
+                    <div><i class="fas fa-heart mr-1"></i>${like}</div>
                     <div><i class="far fa-clock mr-1"></i>${time_ago}</div>
                 </div>  
                 </div>

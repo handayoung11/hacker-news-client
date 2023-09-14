@@ -21,7 +21,7 @@ const template = `
       </div>
 
       <div class="h-full border rounded-xl bg-white m-6 p-4 ">
-        <h2>{{__title__}}</h2>
+        <h2 class="text-2xl mb-4">{{__title__}}</h2>
         <div class="text-gray-400" style='min-height: 5rem'>
           {{__content__}}
         </div>
@@ -66,8 +66,8 @@ export default class NewsDetailView extends View {
               <p class="text-gray-700">${comment.content}</p>
             </div>      
           `);
-      if (comment.comments.length > 0)
-        this.addHtml(this.makeComment(comment.comments));
+      // if (comment.comments.length > 0)
+      //   this.addHtml(this.makeComment(comment.comments));
     }
     return this.getHtml();
   }
